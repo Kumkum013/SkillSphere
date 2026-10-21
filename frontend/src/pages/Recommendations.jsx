@@ -1,71 +1,224 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Target, FolderKanban } from 'lucide-react';
-import Navbar from '../components/Navbar';
+import {
+  Compass,
+  Target,
+  Sparkles,
+  CheckCircle2,
+  ArrowRight,
+  User,
+  Plus
+} from 'lucide-react';
+import Sidebar from '../components/Sidebar';
+import TopNav from '../components/TopNav';
+import { RecommendationsEmptyIllustration } from '../components/DashboardIllustrations';
 import api from '../services/api';
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.06 } } };
-const item = { hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } };
+const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
 
 const Recommendations = () => {
   const [items, setItems] = useState([]);
-  useEffect(() => { api.get('/projects/recommendations').then((res) => setItems(res.data.recommendations)); }, []);
+  const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [notificationsCount, setNotificationsCount] = useState(0);
+  const [searchNavQuery, setSearchNavQuery] = useState('');
+
+  // Fetch notifications count for sidebar/top header
+  useEffect(() => {
+    api.get('/notifications/unread-count')
+      .then((res) => setNotificationsCount(res.data?.unreadCount || 0))
+      .catch(() => {});
+  }, []);
+
+  // Fetch recommended projects (Preserves existing API integration)
+  useEffect(() => {
+    setLoading(true);
+    api.get('/projects/recommendations')
+      .then((res) => setItems(res.data?.recommendations || []))
+      .catch(() => setItems([]))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
-    <div className="min-h-screen bg-bg">
-      <Navbar />
-      <main className="max-w-5xl mx-auto px-6 py-10">
-        <div className="flex items-center gap-3 mb-2">
-          <Target className="w-8 h-8 text-[#f87171]" />
-          <h1 className="text-3xl font-display font-700 text-white">Recommended projects</h1>
-        </div>
-        <p className="text-sm text-slate-400 mt-1 mb-8">Projects matched to the skills on your profile. Higher match scores indicate better alignment with your skills.</p>
-        {items.length === 0 ? (
-          <div className="glass-card rounded-2xl p-10 text-center shadow-soft">
-            <FolderKanban className="w-10 h-10 text-ink/20 mx-auto mb-3" />
-            <p className="text-sm text-ink/40">No matching projects yet. Add more skills to improve your matches.</p>
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9] transition-colors">
+      {/* Sidebar Navigation */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        notificationsCount={notificationsCount}
+      />
+
+      {/* Main Content Layout */}
+      <div className="lg:pl-64 flex flex-col min-h-screen">
+        {/* Top Header */}
+        <TopNav
+          onToggleSidebar={() => setSidebarOpen(true)}
+          notificationsCount={notificationsCount}
+          searchQuery={searchNavQuery}
+          onSearchChange={setSearchNavQuery}
+        />
+
+        {/* Recommendations Content Area */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+          {/* Page Heading (Matching Visual Guide) */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-[#4F46E5] dark:text-[#818CF8] border border-indigo-100 dark:border-indigo-900/60 flex items-center justify-center shrink-0">
+              <Compass className="w-5 h-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0F172A] dark:text-[#F1F5F9]">
+                Recommended projects
+              </h1>
+              <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#94A3B8] mt-0.5">
+                Projects matched to the skills on your profile. Higher match scores indicate better alignment with your skills.
+              </p>
+            </div>
           </div>
-        ) : (
-          <motion.div initial="hidden" animate="show" variants={container} className="grid md:grid-cols-2 gap-4">
-            {items.map(({ project, matchedSkills, matchScore }) => (
-              <motion.div key={project._id} variants={item} whileHover={{ y: -4 }} transition={{ duration: 0.15 }}>
-                <Link to={`/projects/${project._id}`} className="block glass-card hover-glow rounded-2xl p-5 hover:border-[#f87171]/40 hover:shadow-[0_18px_38px_rgba(15,23,42,0.35)] transition-all h-full">
-                  <div className="flex justify-between gap-4 items-start mb-3">
-                    <h2 className="font-display font-600 text-white flex-1">{project.title}</h2>
-                    <div className="flex items-center gap-2">
-                      <div className="w-14 h-14 rounded-full flex items-center justify-center font-display font-700 text-sm text-white flex-shrink-0"
-                        style={{ background: `conic-gradient(#10b981 ${matchScore * 3.6}deg, #334155 0deg)` }}>
-                        <div className="w-11 h-11 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs font-700">
-                          {matchScore}%
+
+          {/* Recommendations Grid or Empty State */}
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-52 bg-white dark:bg-[#111827] border border-[#E2E8F0] dark:border-[#263449] rounded-2xl p-5 animate-pulse"
+                />
+              ))}
+            </div>
+          ) : items.length === 0 ? (
+            /* Empty State Container (Matches Reference Image) */
+            <div className="bg-white dark:bg-[#111827] border border-[#E2E8F0] dark:border-[#263449] rounded-2xl min-h-[340px] sm:min-h-[380px] p-10 sm:p-16 flex flex-col items-center justify-center text-center shadow-xs">
+              <RecommendationsEmptyIllustration className="w-36 h-36 mb-2" />
+              <h2 className="text-xl sm:text-2xl font-bold text-[#0F172A] dark:text-[#F1F5F9]">
+                No matching projects yet.
+              </h2>
+              <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#94A3B8] mt-1.5 mb-6 max-w-md mx-auto">
+                Add more skills to improve your matches.
+              </p>
+              <Link
+                to="/profile"
+                className="inline-flex items-center gap-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow-xs hover:shadow transition-all"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add skills to profile</span>
+              </Link>
+            </div>
+          ) : (
+            /* Populated Recommendations Grid */
+            <motion.div
+              initial="hidden"
+              animate="show"
+              variants={container}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+            >
+              {items.map(({ project, matchedSkills, matchScore }) => {
+                const isEligible = matchScore >= (project.minMatchScore || 50);
+
+                return (
+                  <motion.div
+                    key={project._id}
+                    variants={item}
+                    whileHover={{ y: -3 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <Link
+                      to={`/projects/${project._id}`}
+                      className="group bg-white dark:bg-[#111827] border border-[#E2E8F0] dark:border-[#263449] rounded-2xl p-5 hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-card-hover transition-all flex flex-col justify-between h-full"
+                    >
+                      <div>
+                        {/* Title, Match Score, Eligibility */}
+                        <div className="flex items-start justify-between gap-3 mb-2.5">
+                          <h2 className="font-bold text-sm sm:text-base text-[#0F172A] dark:text-[#F1F5F9] group-hover:text-[#4F46E5] dark:group-hover:text-[#818CF8] transition-colors truncate">
+                            {project.title}
+                          </h2>
+
+                          {/* Match Score Badge */}
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+                              <Sparkles className="w-3 h-3 text-emerald-500" />
+                              {matchScore}% Match
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Description */}
+                        <p className="text-xs text-[#64748B] dark:text-[#94A3B8] line-clamp-2 mb-3">
+                          {project.description || 'No description provided.'}
+                        </p>
+
+                        {/* Matching Skills */}
+                        {matchedSkills && matchedSkills.length > 0 && (
+                          <div className="mb-3">
+                            <span className="text-[10px] font-semibold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider block mb-1">
+                              Your Matching Skills
+                            </span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {matchedSkills.map((skill) => (
+                                <span
+                                  key={skill}
+                                  className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+                                >
+                                  {skill}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Required Skills */}
+                        {project.requiredSkills && project.requiredSkills.length > 0 && (
+                          <div className="mb-3">
+                            <span className="text-[10px] font-semibold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider block mb-1">
+                              All Required Skills
+                            </span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {project.requiredSkills.slice(0, 4).map((s, idx) => (
+                                <span
+                                  key={s.skillId || idx}
+                                  className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-[#F8FAFC] dark:bg-[#172033] text-slate-600 dark:text-slate-300 border border-[#E2E8F0] dark:border-[#263449]"
+                                >
+                                  {s.name}
+                                </span>
+                              ))}
+                              {project.requiredSkills.length > 4 && (
+                                <span className="text-[11px] text-slate-400 self-center">
+                                  +{project.requiredSkills.length - 4}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Footer: Owner info, status, details action */}
+                      <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-1.5 text-[#64748B] dark:text-[#94A3B8]">
+                          <User className="w-3.5 h-3.5 text-slate-400" />
+                          <span className="truncate max-w-[120px]">{project.ownerId?.name || 'Project Owner'}</span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                            {project.status || 'OPEN'}
+                          </span>
+                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#4F46E5] dark:text-[#818CF8] group-hover:translate-x-0.5 transition-transform">
+                            <span>Details</span>
+                            <ArrowRight className="w-3 h-3" />
+                          </span>
                         </div>
                       </div>
-                      {matchScore >= (project.minMatchScore || 50) && (
-                        <span className="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-400/20">Eligible</span>
-                      )}
-                    </div>
-                  </div>
-                  <p className="text-sm text-slate-300 line-clamp-2 mb-4">{project.description}</p>
-                  <div className="mb-3">
-                    <p className="text-xs text-slate-400 mb-2">Your matching skills:</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {matchedSkills.map((skill) => (
-                        <span key={skill} className="text-xs px-2.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span>Owner: {project.ownerId?.name || 'Unknown'}</span>
-                    <span className="px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700">{project.status}</span>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-      </main>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          )}
+        </main>
+      </div>
     </div>
   );
 };
+
 export default Recommendations;
