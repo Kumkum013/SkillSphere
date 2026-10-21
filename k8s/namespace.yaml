@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: skillsphere
+  labels:
+    name: skillsphere
+    environment: production

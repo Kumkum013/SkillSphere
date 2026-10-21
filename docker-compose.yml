@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6
+    container_name: skillsphere-mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - skillsphere-network
+
+  redis:
+    image: redis:alpine
+    container_name: skillsphere-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - skillsphere-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: skillsphere-backend
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://mongo:27017/skillsphere
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=skillsphere_jwt_secret_key_production_2026
+      - FRONTEND_URL=http://localhost:5173
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - skillsphere-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: skillsphere-frontend
+    restart: unless-stopped
+    ports:
+      - '5173:80'
+    depends_on:
+      - backend
+    networks:
+      - skillsphere-network
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  skillsphere-network:
+    driver: bridge

@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: skillsphere-ingress
+  namespace: skillsphere
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" # Optional: for SSL
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: skillsphere.local # Change to your domain
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: skillsphere-frontend-service
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: skillsphere-backend-service
+            port:
+              number: 5000
+  # Optional: TLS configuration
+  # tls:
+  # - hosts:
+  #   - skillsphere.local
+  #   secretName: skillsphere-tls
