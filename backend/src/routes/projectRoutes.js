@@ -5,7 +5,10 @@ const {
   listProjects,
   getProjectById,
   updateProject,
-  deleteProject
+  deleteProject,
+  addMilestone,
+  updateMilestone,
+  deleteMilestone
 } = require('../controllers/projectController');
 const { getRecommendations, getProjectRecommendations } = require('../controllers/matchController');
 const {
@@ -27,6 +30,7 @@ const { validateCreateProject } = require('../middleware/validator');
 
 router.post('/', protect, createLimiter, validateCreateProject, createProject);
 router.get('/', protect, listProjects);
+router.get('/my-projects', protect, listProjects);
 router.get('/recommendations', protect, getProjectRecommendations);
 router.get('/:projectId/chat', protect, getProjectMessages);
 router.post('/:projectId/chat', protect, sendProjectMessage);
@@ -40,5 +44,8 @@ router.get('/:id', protect, getProjectById);
 router.put('/:id', protect, updateProject);
 router.delete('/:id', protect, deleteProject);
 router.get('/:id/recommendations', protect, getRecommendations);
+router.post('/:id/milestones', protect, addMilestone);
+router.put('/:id/milestones/:milestoneIndex', protect, updateMilestone);
+router.delete('/:id/milestones/:milestoneIndex', protect, deleteMilestone);
 
 module.exports = router;

@@ -1,33 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const passport = require('../config/github');
 const User = require('../models/User');
-const { register, login, getMe } = require('../controllers/Authcontroller');
+const { register, login, getMe, forgotPassword, resetPassword } = require('../controllers/Authcontroller');
 const { protect } = require('../middleware/authMiddleware');
 const { authLimiter } = require('../middleware/rateLimiter');
-const { validateRegister, validateLogin } = require('../middleware/validator');
+const { validateRegister, validateLogin, validateForgotPassword, validateResetPassword } = require('../middleware/validator');
 
 router.post('/register', authLimiter, validateRegister, register);
 router.post('/login', authLimiter, validateLogin, login);
 router.get('/me', protect, getMe);
 
-// GitHub OAuth Routes
-router.get('/github', passport.authenticate('github', { scope: ['user:email', 'repo'] }));
+// Password Reset Routes
+router.post('/forgot-password', authLimiter, validateForgotPassword, forgotPassword);
+router.post('/reset-password/:token', validateResetPassword, resetPassword);
 
-router.get('/github/callback',
-  (req, res, next) => {
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    passport.authenticate('github', { failureRedirect: `${frontendUrl}/login?error=github_failed` })(req, res, next);
-  },
-  (req, res) => {
-    // Successful authentication
-    const token = req.user.generateToken();
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    res.redirect(`${frontendUrl}/auth/github?token=${token}`);
-  }
-);
-
-// Link GitHub account to existing user
+// Link GitHub account to existing user (manual link only, no OAuth)
 router.post('/github/link', protect, async (req, res) => {
   try {
     const { githubUsername } = req.body;

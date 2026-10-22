@@ -143,6 +143,23 @@ const Recommendations = () => {
                           </div>
                         </div>
 
+                        {/* Threshold Info */}
+                        <div className="mb-2">
+                          <span className="text-[10px] text-[#64748B] dark:text-[#94A3B8]">
+                            Minimum required: <span className="font-semibold text-[#0F172A] dark:text-[#F1F5F9]">{project.minMatchScore || 50}%</span>
+                            {isEligible ? (
+                              <span className="ml-2 text-emerald-600 dark:text-emerald-400 flex items-center gap-1 inline-flex">
+                                <CheckCircle2 className="w-3 h-3" />
+                                Eligible to apply
+                              </span>
+                            ) : (
+                              <span className="ml-2 text-amber-600 dark:text-amber-400">
+                                Below threshold
+                              </span>
+                            )}
+                          </span>
+                        </div>
+
                         {/* Description */}
                         <p className="text-xs text-[#64748B] dark:text-[#94A3B8] line-clamp-2 mb-3">
                           {project.description || 'No description provided.'}

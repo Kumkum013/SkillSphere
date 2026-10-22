@@ -59,6 +59,25 @@ const validateLogin = (req, res, next) => {
   next();
 };
 
+// Validate forgot password request
+const validateForgotPassword = (req, res, next) => {
+  const { email } = req.body;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    return res.status(400).json({ message: 'A valid email address is required' });
+  }
+  next();
+};
+
+// Validate reset password request
+const validateResetPassword = (req, res, next) => {
+  const { password } = req.body;
+  if (!password || typeof password !== 'string' || password.length < 6) {
+    return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+  }
+  next();
+};
+
 // Validate project creation
 const validateCreateProject = (req, res, next) => {
   const { title, description, requiredSkills, minMatchScore } = req.body;
@@ -91,5 +110,7 @@ module.exports = {
   sanitizeNoSql,
   validateRegister,
   validateLogin,
+  validateForgotPassword,
+  validateResetPassword,
   validateCreateProject
 };

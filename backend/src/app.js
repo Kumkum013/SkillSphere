@@ -11,6 +11,13 @@ const chatRoutes = require('./routes/chatRoutes');
 const facultyRoutes = require('./routes/facultyRoutes');
 const contributionRoutes = require('./routes/contributionRoutes');
 const metricsRoutes = require('./routes/metricsRoutes');
+const clientRoutes = require('./routes/clientRoutes');
+const timeEntryRoutes = require('./routes/timeEntryRoutes');
+const invoiceRoutes = require('./routes/invoiceRoutes');
+const projectTemplateRoutes = require('./routes/projectTemplateRoutes');
+const activityLogRoutes = require('./routes/activityLogRoutes');
+const documentRoutes = require('./routes/documentRoutes');
+const exportRoutes = require('./routes/exportRoutes');
 
 const helmet = require('helmet');
 const { apiLimiter } = require('./middleware/rateLimiter');
@@ -41,5 +48,12 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/faculty', facultyRoutes);
 app.use('/api/contributions', contributionRoutes);
 app.use('/api/metrics', metricsRoutes);
+app.use('/api/clients', clientRoutes);
+app.use('/api/time-entries', timeEntryRoutes);
+app.use('/api/invoices', invoiceRoutes);
+app.use('/api/project-templates', projectTemplateRoutes);
+app.use('/api/activity-logs', activityLogRoutes);
+app.use('/api/documents', documentRoutes);
+app.use('/api/export', exportRoutes);
 
 module.exports = app;

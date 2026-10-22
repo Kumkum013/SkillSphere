@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight, Users, Target, Github } from 'lucide-react';
+import { Sparkles, ArrowRight, Users, Target } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const floatingBadges = [
@@ -121,6 +121,11 @@ const Login = () => {
                 className="w-full mt-1.5 px-4 py-3 rounded-xl border border-gray-700 bg-gray-900 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 text-sm transition-all"
                 placeholder="••••••••"
               />
+              <div className="mt-2 text-right">
+                <Link to="/forgot-password" className="text-xs text-indigo-400 hover:text-indigo-300 hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-500/40 rounded">
+                  Forgot password?
+                </Link>
+              </div>
             </div>
 
             <motion.button
@@ -134,20 +139,6 @@ const Login = () => {
                 <>Log In <ArrowRight className="w-4 h-4" /></>
               )}
             </motion.button>
-
-            <div className="relative my-5 text-center">
-              <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-slate-800" />
-              <span className="relative bg-[#111827] px-3 text-xs uppercase tracking-wider text-slate-500">
-                Or continue with
-              </span>
-            </div>
-
-            <a
-              href="http://localhost:5000/api/auth/github"
-              className="w-full bg-[#1f2937] hover:bg-[#374151] text-white text-sm font-semibold py-3.5 rounded-xl border border-slate-700 focus:outline-none transition-all flex items-center justify-center gap-2"
-            >
-              <Github className="w-4 h-4" /> Sign In with GitHub
-            </a>
           </form>
 
           <p className="text-center text-sm text-slate-400 mt-6">

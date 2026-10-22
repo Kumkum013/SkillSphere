@@ -29,7 +29,10 @@ const userSchema = new mongoose.Schema({
     accessToken: { type: String },
     profileUrl: { type: String },
     avatarUrl: { type: String }
-  }
+  },
+  // Password Reset
+  resetPasswordToken: String,
+  resetPasswordExpire: Date
 }, { timestamps: true });
 
 // Compound index for fast student search (role + year + branch)

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Users,
   Search,
@@ -8,7 +9,9 @@ import {
   ArrowRight,
   GraduationCap,
   CalendarDays,
-  Sparkles
+  Sparkles,
+  UserPlus,
+  Mail
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import TopNav from '../components/TopNav';
@@ -22,6 +25,9 @@ const Students = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationsCount, setNotificationsCount] = useState(0);
   const [searchNavQuery, setSearchNavQuery] = useState('');
+  const [userProjects, setUserProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState('');
+  const [studentMatchScores, setStudentMatchScores] = useState({});
 
   const [filters, setFilters] = useState({
     skill: '',
@@ -43,6 +49,13 @@ const Students = () => {
     api.get('/notifications/unread-count')
       .then((res) => setNotificationsCount(res.data?.unreadCount || 0))
       .catch(() => {});
+  }, []);
+
+  // Fetch user's projects for inviting
+  useEffect(() => {
+    api.get('/projects?scope=my')
+      .then((res) => setUserProjects(res.data?.projects || []))
+      .catch(() => setUserProjects([]));
   }, []);
 
   // Load students with parameters (Preserves existing API integration)
@@ -87,6 +100,59 @@ const Students = () => {
     setSearchNavQuery(val);
     setFilters((prev) => ({ ...prev, search: val }));
   };
+
+  // Calculate match score for a student based on selected project
+  const calculateMatchScore = (student, project) => {
+    if (!project || !project.requiredSkills || !student.skills) return 0;
+
+    const studentSkillNames = new Set(
+      student.skills.map(s => (s.name || s.skillId?.name || '').toLowerCase())
+    );
+
+    let matchedWeight = 0;
+    let totalWeight = 0;
+
+    project.requiredSkills.forEach(requiredSkill => {
+      totalWeight += requiredSkill.weight || 1;
+      if (studentSkillNames.has(requiredSkill.name.toLowerCase())) {
+        matchedWeight += requiredSkill.weight || 1;
+      }
+    });
+
+    return totalWeight > 0 ? Math.round((matchedWeight / totalWeight) * 100) : 0;
+  };
+
+  // Handle sending invitation
+  const handleInvite = async (studentId, studentName) => {
+    if (!selectedProject) {
+      alert('Please select a project first');
+      return;
+    }
+
+    try {
+      await api.post('/invitations', {
+        studentId: studentId,
+        projectId: selectedProject
+      });
+      alert(`Invitation sent to ${studentName}!`);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to send invitation');
+    }
+  };
+
+  // Update match scores when project selection changes
+  useEffect(() => {
+    if (selectedProject && students.length > 0) {
+      const project = userProjects.find(p => p._id === selectedProject);
+      if (project) {
+        const scores = {};
+        students.forEach(student => {
+          scores[student._id] = calculateMatchScore(student, project);
+        });
+        setStudentMatchScores(scores);
+      }
+    }
+  }, [selectedProject, students]);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9] transition-colors">
@@ -225,6 +291,30 @@ const Students = () => {
             </div>
           </section>
 
+          {/* Project Selector for Invitations */}
+          {userProjects.length > 0 && (
+            <section className="bg-white dark:bg-[#111827] border border-[#E2E8F0] dark:border-[#263449] rounded-2xl p-5 sm:p-6 shadow-xs">
+              <div className="flex items-center gap-2 mb-3">
+                <UserPlus className="w-4 h-4 text-[#4F46E5] dark:text-[#818CF8]" />
+                <h2 className="text-sm font-bold text-[#0F172A] dark:text-[#F1F5F9]">
+                  Send Invitations
+                </h2>
+              </div>
+              <select
+                value={selectedProject}
+                onChange={(e) => setSelectedProject(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#263449] bg-white dark:bg-[#0F172A] text-xs sm:text-sm text-[#0F172A] dark:text-[#F1F5F9] focus:outline-none focus:border-[#4F46E5] dark:focus:border-[#818CF8] focus:ring-2 focus:ring-indigo-500/10 transition-all"
+              >
+                <option value="">Select a project to see match scores and invite students</option>
+                {userProjects.map((project) => (
+                  <option key={project._id} value={project._id}>
+                    {project.title} (Min: {project.minMatchScore || 50}%)
+                  </option>
+                ))}
+              </select>
+            </section>
+          )}
+
           {/* Error and Rate-Limit Alert Banner */}
           {error && (
             <div
@@ -278,7 +368,7 @@ const Students = () => {
                       className="bg-white dark:bg-[#111827] border border-[#E2E8F0] dark:border-[#263449] rounded-2xl p-5 hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-card-hover transition-all flex flex-col justify-between group"
                     >
                       <div>
-                        {/* Student Avatar + Name + Availability */}
+                        {/* Student Avatar + Name + Availability + Match Score */}
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="flex items-center gap-3 min-w-0">
                             {student.avatarUrl ? (
@@ -303,16 +393,26 @@ const Students = () => {
                             </div>
                           </div>
 
-                          {/* Availability Badge */}
-                          <span
-                            className={`shrink-0 text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${
-                              isAvailable
-                                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
-                                : 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
-                            }`}
-                          >
-                            {isAvailable ? 'Available' : 'Busy'}
-                          </span>
+                          <div className="flex flex-col items-end gap-1.5">
+                            {/* Match Score Badge (if project selected) */}
+                            {selectedProject && (
+                              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+                                <Sparkles className="w-3 h-3 text-emerald-500" />
+                                {studentMatchScores[student._id] || 0}% Match
+                              </span>
+                            )}
+
+                            {/* Availability Badge */}
+                            <span
+                              className={`shrink-0 text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${
+                                isAvailable
+                                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
+                                  : 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
+                              }`}
+                            >
+                              {isAvailable ? 'Available' : 'Busy'}
+                            </span>
+                          </div>
                         </div>
 
                         {/* Academic Info: Branch & Year */}
@@ -364,17 +464,32 @@ const Students = () => {
                         )}
                       </div>
 
-                      {/* Footer: Role or Connection */}
+                      {/* Footer: Role, Profile, and Invite */}
                       <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
                         <span className="text-[11px] font-medium text-[#64748B] dark:text-[#94A3B8] flex items-center gap-1">
                           <GraduationCap className="w-3.5 h-3.5 text-slate-400" />
                           <span>Student</span>
                         </span>
 
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#4F46E5] dark:text-[#818CF8] group-hover:translate-x-0.5 transition-transform">
-                          <span>Profile</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </span>
+                        <div className="flex items-center gap-2">
+                          {selectedProject && (
+                            <button
+                              onClick={() => handleInvite(student._id, student.name)}
+                              className="inline-flex items-center gap-1 text-xs font-semibold text-[#4F46E5] dark:text-[#818CF8] hover:text-[#4338CA] dark:hover:text-indigo-300 transition-colors"
+                            >
+                              <UserPlus className="w-3.5 h-3.5" />
+                              <span>Invite</span>
+                            </button>
+                          )}
+
+                          <Link
+                            to={`/students/${student._id}`}
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#4F46E5] dark:text-[#818CF8] group-hover:translate-x-0.5 transition-transform"
+                          >
+                            <span>Profile</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   );

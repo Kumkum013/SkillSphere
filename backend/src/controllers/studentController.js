@@ -6,6 +6,28 @@ const Task = require('../models/task');
 const { cacheDel } = require('../config/redis');
 const { extractResumeSkills } = require('../services/resumeSkillExtractor');
 
+const getStudentById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const student = await User.findById(id)
+      .select('-password')
+      .populate('skills.skillId', 'name');
+
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    if (student.role !== 'STUDENT') {
+      return res.status(400).json({ message: 'User is not a student' });
+    }
+
+    res.status(200).json({ student });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch student', error: err.message });
+  }
+};
+
 const searchStudents = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -150,11 +172,8 @@ const getResumeMatches = async (req, res) => {
       return res.status(413).json({ message: 'Resume text is too large to analyze' });
     }
 
-    const user = await User.findById(req.user.id).select('availability');
+    const user = await User.findById(req.user.id).select('availability role');
     if (!user) return res.status(404).json({ message: 'User not found' });
-    if (user.role !== 'STUDENT') {
-      return res.status(403).json({ message: 'Only students can analyze a resume' });
-    }
 
     const catalogSkills = await Skill.find().select('name');
     const detectedSkills = extractResumeSkills(resumeText, catalogSkills);
@@ -217,4 +236,4 @@ const getResumeMatches = async (req, res) => {
   }
 };
 
-module.exports = { getProfile, updateProfile, addSkill, removeSkill, searchStudents, getResumeMatches };
+module.exports = { getProfile, updateProfile, addSkill, removeSkill, searchStudents, getStudentById, getResumeMatches };

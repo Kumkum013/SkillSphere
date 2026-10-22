@@ -152,7 +152,64 @@ const sendJoinRequestEmail = async ({ owner, requester, project }) => {
 };
 
 /**
- * 3. Notification Email when Join Request or Invitation is Accepted/Rejected
+ * 3. Password Reset Email
+ */
+const sendPasswordResetEmail = async ({ recipient, resetUrl }) => {
+  const transporter = getTransporter();
+  if (!transporter) {
+    return { sent: false, reason: getSmtpNotConfiguredReason() };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: getFromAddress(),
+      to: recipient.email,
+      subject: '🔐 Password Reset Request for SkillSphere',
+      text: `Hello ${recipient.name},\n\nYou requested a password reset for your SkillSphere account.\n\nClick the link below to reset your password:\n${resetUrl}\n\nThis link will expire in 1 hour.\n\nIf you did not request this, please ignore this email.\n\nBest,\nSkillSphere Team`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0b0f19; color: #f8fafc; border-radius: 16px; overflow: hidden; border: 1px solid #1e293b;">
+          <div style="background: linear-gradient(135deg, #8b5cf6, #a855f7); padding: 32px 24px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.5px;">SkillSphere</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 6px 0 0 0; font-size: 14px;">Password Reset Request</p>
+          </div>
+          <div style="padding: 32px 24px;">
+            <p style="font-size: 16px; color: #e2e8f0; margin-top: 0;">Hi <strong>${recipient.name}</strong>,</p>
+            <p style="font-size: 15px; color: #cbd5e1; line-height: 1.6;">
+              We received a request to reset your password for your SkillSphere account.
+            </p>
+            <div style="text-align: center; margin: 32px 0;">
+              <a href="${resetUrl}" style="background: #8b5cf6; color: #ffffff; padding: 14px 28px; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 10px; display: inline-block;">
+                Reset Password
+              </a>
+            </div>
+            <p style="font-size: 13px; color: #64748b; text-align: center; margin: 24px 0;">
+              This link will expire in 1 hour for your security.
+            </p>
+            <p style="font-size: 13px; color: #64748b; margin: 0;">
+              If the button doesn't work, copy and paste this link:<br>
+              <a href="${resetUrl}" style="color: #8b5cf6; word-break: break-all;">${resetUrl}</a>
+            </p>
+            <p style="font-size: 13px; color: #64748b; margin-top: 24px;">
+              If you did not request this password reset, please ignore this email. Your password will remain unchanged.
+            </p>
+          </div>
+          <div style="background: #070a12; padding: 16px 24px; text-align: center; border-top: 1px solid #1e293b;">
+            <p style="color: #475569; font-size: 12px; margin: 0;">SkillSphere Campus Collaboration Platform</p>
+          </div>
+        </div>
+      `
+    });
+
+    console.log(`✅ Password reset email sent to ${recipient.email}: ${info.messageId}`);
+    return { sent: true, messageId: info.messageId };
+  } catch (err) {
+    console.error(`❌ Failed to send password reset email to ${recipient.email}:`, err.message);
+    return { sent: false, error: err.message };
+  }
+};
+
+/**
+ * 4. Notification Email when Join Request or Invitation is Accepted/Rejected
  */
 const sendDecisionEmail = async ({ recipient, project, decision, senderName }) => {
   const transporter = getTransporter();
@@ -205,5 +262,6 @@ const sendDecisionEmail = async ({ recipient, project, decision, senderName }) =
 module.exports = {
   sendInvitationEmail,
   sendJoinRequestEmail,
-  sendDecisionEmail
+  sendDecisionEmail,
+  sendPasswordResetEmail
 };

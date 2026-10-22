@@ -11,7 +11,12 @@ import {
   UserRoundPlus,
   ChevronRight,
   LogOut,
-  X
+  X,
+  Building2,
+  Clock,
+  DollarSign,
+  BarChart3,
+  FileText
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -19,6 +24,11 @@ const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/projects', label: 'Projects', icon: FolderKanban },
   { path: '/students', label: 'Students', icon: Users },
+  { path: '/clients', label: 'Clients', icon: Building2 },
+  { path: '/time-tracking', label: 'Time Tracking', icon: Clock },
+  { path: '/financials', label: 'Financials', icon: DollarSign },
+  { path: '/reports', label: 'Reports', icon: BarChart3 },
+  { path: '/templates', label: 'Templates', icon: FileText },
   { path: '/invitations', label: 'Invitations', icon: Mail, badgeKey: 'invitations' },
   { path: '/recommendations', label: 'Discover', icon: Compass },
   { path: '/todos', label: 'Todo', icon: ListTodo },
