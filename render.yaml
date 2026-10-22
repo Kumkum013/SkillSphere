@@ -3,7 +3,7 @@ services:
     name: skillsphere-frontend
     env: node
     buildCommand: cd frontend && npm install && npm run build
-    startCommand: cd frontend && npm install -g serve && serve -s build -l 3000
+    startCommand: cd frontend && npx serve -s build -l 3000
     envVars:
       - key: VITE_API_URL
         value: https://skillsphere-backend.onrender.com/api

@@ -108,7 +108,7 @@
    - Root Directory: `frontend`
    - Runtime: `Node`
    - Build Command: `npm install && npm run build`
-   - Start Command: `npm install -g serve && serve -s build -l 3000`
+   - Start Command: `npx serve -s build -l 3000`
 5. Environment Variables:
    - Add:
      ```
