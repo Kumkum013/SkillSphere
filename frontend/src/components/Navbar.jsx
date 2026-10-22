@@ -13,7 +13,8 @@ import {
   Users,
   GraduationCap,
   Sun,
-  Moon
+  Moon,
+  ChevronDown
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -47,7 +48,7 @@ const Navbar = () => {
   }, [user, location.pathname]);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-[#E2E8F0] dark:border-[#263449] bg-white/90 dark:bg-[#111827]/90 backdrop-blur-md transition-colors">
+    <header className="sticky top-0 z-30 border-b border-[#E2E8F0] dark:border-indigo-500/15 bg-white/90 dark:bg-[#070B1B]/95 backdrop-blur-md transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <Link to="/dashboard" className="flex items-center gap-2.5 group">
           <SkillSphereLogo className="w-8 h-8" />
@@ -56,7 +57,7 @@ const Navbar = () => {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1 rounded-full border border-[#E2E8F0] dark:border-[#263449] bg-[#F8FAFC] dark:bg-[#172033] p-1 shadow-2xs">
+        <nav className="hidden md:flex items-center gap-1 rounded-full border border-[#E2E8F0] dark:border-indigo-500/20 bg-[#F8FAFC] dark:bg-[#0E152E] p-1 shadow-2xs">
           {navItems.map((item) => {
             const active = location.pathname.startsWith(item.path);
             const Icon = item.icon;
@@ -68,12 +69,12 @@ const Navbar = () => {
                 to={item.path}
                 className={`relative px-3 py-1.5 text-xs lg:text-sm rounded-full transition-all flex items-center gap-1.5 ${
                   active
-                    ? 'bg-white dark:bg-[#111827] text-[#4F46E5] dark:text-[#818CF8] font-semibold shadow-xs'
-                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-[#F1F5F9]'
+                    ? 'bg-white dark:bg-[#1C2548] text-[#4F46E5] dark:text-[#A5B4FC] font-semibold shadow-xs border border-transparent dark:border-indigo-500/30'
+                    : 'text-[#64748B] dark:text-[#94A3C8] hover:text-[#0F172A] dark:hover:text-[#F1F5F9]'
                 }`}
               >
                 <div className="relative">
-                  <Icon className={`w-4 h-4 ${active ? 'text-[#4F46E5] dark:text-[#818CF8]' : 'text-slate-400'}`} />
+                  <Icon className={`w-4 h-4 ${active ? 'text-[#4F46E5] dark:text-[#818CF8]' : 'text-slate-400 dark:text-slate-500'}`} />
                   {isNotifications && unreadCount > 0 && (
                     <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-rose-500 text-[9px] font-bold text-white flex items-center justify-center">
                       {unreadCount > 9 ? '9+' : unreadCount}
@@ -100,14 +101,15 @@ const Navbar = () => {
           {/* User Profile Pill */}
           <Link
             to="/profile"
-            className="hidden sm:flex items-center gap-2 rounded-full border border-[#E2E8F0] dark:border-[#263449] bg-[#F8FAFC] dark:bg-[#172033] px-2.5 py-1 hover:border-indigo-300 dark:hover:border-indigo-800 transition-colors"
+            className="hidden sm:flex items-center gap-2 rounded-full border border-[#E2E8F0] dark:border-indigo-500/25 bg-[#F8FAFC] dark:bg-[#0E152E] px-2.5 py-1 hover:border-indigo-300 dark:hover:border-indigo-500/40 transition-colors"
           >
-            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white text-xs font-bold shadow-xs">
               {user?.name?.[0]?.toUpperCase() || 'U'}
             </div>
-            <span className="text-xs sm:text-sm text-[#0F172A] dark:text-[#F1F5F9] font-medium max-w-[100px] truncate">
-              {user?.name}
+            <span className="text-xs sm:text-sm text-[#0F172A] dark:text-[#F1F5F9] font-medium max-w-[120px] truncate">
+              {user?.name || 'User'}
             </span>
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 dark:text-[#94A3C8]" />
             {user?.role === 'FACULTY' && (
               <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-[#4F46E5] dark:text-[#818CF8] border border-indigo-200 dark:border-indigo-800 flex items-center gap-1">
                 <GraduationCap className="w-3 h-3" />

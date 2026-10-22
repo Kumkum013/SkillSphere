@@ -348,3 +348,213 @@ export const NotificationsEmptyIllustration = ({ className = 'w-36 h-28' }) => (
     </svg>
   </div>
 );
+
+// Modern Empty State Illustration: Holographic Glowing Project Cards with Graduation Cap (Matches Join Requests Reference Image)
+export const JoinRequestsEmptyIllustration = ({ className = 'w-72 sm:w-80 h-64' }) => (
+  <div className={`${className} mx-auto relative flex items-center justify-center select-none`}>
+    <svg viewBox="0 0 300 250" fill="none" className="w-full h-full overflow-visible" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        {/* Glows */}
+        <radialGradient id="capRadialGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#818CF8" stopOpacity="0.45" />
+          <stop offset="50%" stopColor="#6366F1" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="#4F46E5" stopOpacity="0" />
+        </radialGradient>
+
+        <radialGradient id="platformShadow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#6366F1" stopOpacity="0.35" />
+          <stop offset="60%" stopColor="#4338CA" stopOpacity="0.15" />
+          <stop offset="100%" stopColor="#1E1B4B" stopOpacity="0" />
+        </radialGradient>
+
+        {/* Card Gradients */}
+        <linearGradient id="centralCardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#253265" />
+          <stop offset="40%" stopColor="#1A244D" />
+          <stop offset="100%" stopColor="#0E1635" />
+        </linearGradient>
+
+        <linearGradient id="bgCardLeftGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#1C2754" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#0A1028" stopOpacity="0.9" />
+        </linearGradient>
+
+        <linearGradient id="bgCardRightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#1C2754" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#0A1028" stopOpacity="0.9" />
+        </linearGradient>
+
+        <linearGradient id="avatarCentralGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#818CF8" />
+          <stop offset="100%" stopColor="#4F46E5" />
+        </linearGradient>
+
+        <linearGradient id="badgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#A855F7" />
+          <stop offset="100%" stopColor="#6366F1" />
+        </linearGradient>
+
+        {/* Cap 3D Gradients */}
+        <linearGradient id="capTopGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#4F46E5" />
+          <stop offset="50%" stopColor="#4338CA" />
+          <stop offset="100%" stopColor="#3730A3" />
+        </linearGradient>
+
+        {/* Filters */}
+        <filter id="capGlowFilter" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="16" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+
+        <filter id="cardGlowFilter" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="12" stdDeviation="14" floodColor="#000000" floodOpacity="0.6" />
+        </filter>
+      </defs>
+
+      {/* Atmospheric radial glow behind the top cap */}
+      <circle cx="150" cy="55" r="95" fill="url(#capRadialGlow)" />
+
+      {/* Ground platform glow & shadow */}
+      <ellipse cx="150" cy="224" rx="105" ry="12" fill="url(#platformShadow)" />
+
+      {/* Layer 1: Left Rotated Card */}
+      <g transform="translate(48, 88) rotate(-14 42.5 55)">
+        <rect
+          x="0"
+          y="0"
+          width="85"
+          height="115"
+          rx="14"
+          fill="url(#bgCardLeftGrad)"
+          stroke="#4F46E5"
+          strokeOpacity="0.3"
+          strokeWidth="1.2"
+        />
+        {/* Subtle avatar silhouette */}
+        <circle cx="42.5" cy="42" r="16" fill="#312E81" fillOpacity="0.6" />
+        <circle cx="42.5" cy="38" r="6.5" fill="#6366F1" fillOpacity="0.65" />
+        <path d="M29 52 C29 46 35 44 42.5 44 C50 44 56 46 56 52 Z" fill="#6366F1" fillOpacity="0.65" />
+        {/* Subtle lines */}
+        <rect x="25" y="70" width="35" height="4" rx="2" fill="#4338CA" fillOpacity="0.4" />
+        <rect x="28" y="78" width="28" height="3" rx="1.5" fill="#4338CA" fillOpacity="0.25" />
+      </g>
+
+      {/* Layer 2: Right Rotated Card */}
+      <g transform="translate(166, 88) rotate(14 42.5 55)">
+        <rect
+          x="0"
+          y="0"
+          width="85"
+          height="115"
+          rx="14"
+          fill="url(#bgCardRightGrad)"
+          stroke="#4F46E5"
+          strokeOpacity="0.3"
+          strokeWidth="1.2"
+        />
+        {/* Subtle avatar silhouette */}
+        <circle cx="42.5" cy="42" r="16" fill="#312E81" fillOpacity="0.6" />
+        <circle cx="42.5" cy="38" r="6.5" fill="#6366F1" fillOpacity="0.65" />
+        <path d="M29 52 C29 46 35 44 42.5 44 C50 44 56 46 56 52 Z" fill="#6366F1" fillOpacity="0.65" />
+        {/* Subtle lines */}
+        <rect x="25" y="70" width="35" height="4" rx="2" fill="#4338CA" fillOpacity="0.4" />
+        <rect x="28" y="78" width="28" height="3" rx="1.5" fill="#4338CA" fillOpacity="0.25" />
+      </g>
+
+      {/* Layer 3: Central Large Card */}
+      <g filter="url(#cardGlowFilter)">
+        <rect
+          x="98"
+          y="68"
+          width="104"
+          height="138"
+          rx="18"
+          fill="url(#centralCardGrad)"
+          stroke="#60A5FA"
+          strokeOpacity="0.45"
+          strokeWidth="1.6"
+        />
+        {/* Card Top Inner Glass Rim Highlight */}
+        <path
+          d="M102 86 C102 76 109 70 118 70 L182 70 C191 70 198 76 198 86"
+          stroke="#FFFFFF"
+          strokeOpacity="0.2"
+          strokeWidth="1.2"
+          fill="none"
+        />
+
+        {/* Central Avatar Circle */}
+        <circle cx="150" cy="110" r="22" fill="url(#avatarCentralGrad)" />
+        {/* Avatar Silhouette */}
+        <circle cx="150" cy="104" r="8.5" fill="#FFFFFF" />
+        <path d="M133 124 C133 116 140 114 150 114 C160 114 167 116 167 124 Z" fill="#FFFFFF" />
+
+        {/* Profile info pill lines */}
+        <rect x="126" y="145" width="48" height="5.5" rx="2.75" fill="#A5B4FC" fillOpacity="0.85" />
+        <rect x="126" y="156" width="32" height="4.5" rx="2.25" fill="#818CF8" fillOpacity="0.4" />
+
+        {/* Circular Verification Check Badge on lower right */}
+        <g transform="translate(186, 186)">
+          <circle cx="0" cy="0" r="14" fill="url(#badgeGrad)" stroke="#0E1635" strokeWidth="2.8" />
+          <path
+            d="M-5 0.5 L-1.5 4 L5 -3"
+            stroke="#FFFFFF"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+        </g>
+      </g>
+
+      {/* Layer 4: Floating 3D Graduation Cap with Glow */}
+      <g transform="translate(150, 42)">
+        {/* Subtle cap aura */}
+        <circle cx="0" cy="-5" r="32" fill="#818CF8" fillOpacity="0.25" filter="blur(8px)" />
+
+        {/* Cap skullcap bottom */}
+        <path
+          d="M-22 4 C-22 14 -12 20 0 20 C12 20 22 14 22 4 Z"
+          fill="#312E81"
+          stroke="#6366F1"
+          strokeWidth="1.4"
+        />
+
+        {/* Mortarboard rhombic top */}
+        <polygon
+          points="0,-18 42,-3 0,11 -42,-3"
+          fill="url(#capTopGrad)"
+          stroke="#A5B4FC"
+          strokeWidth="1.8"
+        />
+
+        {/* 3D bevel edge */}
+        <polygon
+          points="0,11 42,-3 42,0 0,14 -42,0 -42,-3"
+          fill="#1E1B4B"
+        />
+
+        {/* Center button */}
+        <circle cx="0" cy="-4" r="3" fill="#E0E7FF" />
+
+        {/* Tassel line & brush */}
+        <path
+          d="M0 -4 C16 -2 30 5 32 16"
+          stroke="#C7D2FE"
+          strokeWidth="1.6"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <circle cx="32" cy="18" r="1.8" fill="#FFFFFF" />
+      </g>
+
+      {/* Floating Sparkles & Stars */}
+      <path d="M82 48 L82 56 M78 52 L86 52" stroke="#818CF8" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M222 52 L222 60 M218 56 L226 56" stroke="#818CF8" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M128 16 L128 22 M125 19 L131 19" stroke="#C7D2FE" strokeWidth="1.4" strokeLinecap="round" />
+      <circle cx="74" cy="78" r="2" fill="#93C5FD" fillOpacity="0.8" />
+      <circle cx="230" cy="88" r="2" fill="#A5B4FC" fillOpacity="0.8" />
+    </svg>
+  </div>
+);
