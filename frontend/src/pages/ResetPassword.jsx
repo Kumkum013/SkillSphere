@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Lock, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
-import axios from 'axios';
+import api from '../services/api';
 
 const ResetPassword = () => {
   const { token } = useParams();
@@ -30,7 +30,7 @@ const ResetPassword = () => {
     setSubmitting(true);
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/auth/reset-password/${token}`, {
+      const response = await api.post(`/auth/reset-password/${token}`, {
         password
       });
       if (response.data.message) {

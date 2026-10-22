@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, X, Zap, Upload, FileText, Users, Send, Github, ExternalLink, Check } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import SkillDots from '../components/SkillDots';
-import api from '../services/api';
+import api, { API_BASE_URL } from '../services/api';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -387,7 +387,7 @@ const Profile = () => {
               </div>
 
               <a
-                href="http://localhost:5000/api/auth/github"
+                href={`${API_BASE_URL}/auth/github`}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium border border-slate-700 transition-colors"
               >
                 <Github className="w-4 h-4" /> Connect with GitHub OAuth

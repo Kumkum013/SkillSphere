@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-// Use relative path for Kubernetes deployment
-// In development, you can set REACT_APP_API_URL in .env
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://skillsphere-3-sibc.onrender.com';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || `${BACKEND_URL}/api`;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api'
+  baseURL: API_BASE_URL
 });
 
 api.interceptors.request.use((config) => {

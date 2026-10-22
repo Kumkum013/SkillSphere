@@ -1,6 +1,6 @@
 # SkillSphere Frontend
 
-React + Vite + Tailwind + Framer Motion, talking to your SkillSphere backend at `http://localhost:5000`.
+React + Vite + Tailwind + Framer Motion, talking to your SkillSphere backend (configured to `https://skillsphere-3-sibc.onrender.com`).
 
 ## Setup
 
@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Opens at `http://localhost:5173`. Make sure your backend is running on port 5000 first (CORS is already configured there to allow this).
+Opens at `http://localhost:5173`, connected to the backend API (`https://skillsphere-3-sibc.onrender.com/api`).
 
 ## Pages
 
