@@ -11,8 +11,6 @@ import {
   User,
   BadgeCheck
 } from 'lucide-react';
-import Sidebar from '../components/Sidebar';
-import TopNav from '../components/TopNav';
 import api from '../services/api';
 
 const StudentProfile = () => {
@@ -49,16 +47,10 @@ const StudentProfile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9]">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} notificationsCount={notificationsCount} />
-        <div className="lg:pl-64 flex flex-col min-h-screen">
-          <TopNav onToggleSidebar={() => setSidebarOpen(true)} notificationsCount={notificationsCount} />
-          <main className="flex-1 p-6 flex items-center justify-center">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-              <p className="mt-4 text-[#64748B]">Loading profile...</p>
-            </div>
-          </main>
+      <div className="min-h-[50vh] flex items-center justify-center p-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-[#64748B] dark:text-[#94A3B8]">Loading profile...</p>
         </div>
       </div>
     );
@@ -66,18 +58,12 @@ const StudentProfile = () => {
 
   if (error || !student) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9]">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} notificationsCount={notificationsCount} />
-        <div className="lg:pl-64 flex flex-col min-h-screen">
-          <TopNav onToggleSidebar={() => setSidebarOpen(true)} notificationsCount={notificationsCount} />
-          <main className="flex-1 p-6 flex items-center justify-center">
-            <div className="text-center">
-              <p className="text-red-600">{error || 'Student not found'}</p>
-              <Link to="/students" className="text-indigo-600 hover:underline mt-4 inline-block">
-                Back to Students
-              </Link>
-            </div>
-          </main>
+      <div className="min-h-[50vh] flex items-center justify-center p-8">
+        <div className="text-center">
+          <p className="text-red-500 font-medium">{error || 'Student not found'}</p>
+          <Link to="/students" className="text-indigo-600 dark:text-indigo-400 hover:underline mt-4 inline-block font-semibold">
+            &larr; Back to Students
+          </Link>
         </div>
       </div>
     );
@@ -87,13 +73,7 @@ const StudentProfile = () => {
   const isAvailable = student.availability === 'available';
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9] transition-colors">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} notificationsCount={notificationsCount} />
-
-      <div className="lg:pl-64 flex flex-col min-h-screen">
-        <TopNav onToggleSidebar={() => setSidebarOpen(true)} notificationsCount={notificationsCount} />
-
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           <Link
             to="/students"
             className="inline-flex items-center gap-2 text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-[#F1F5F9] text-sm mb-6 transition-colors"
@@ -229,8 +209,6 @@ const StudentProfile = () => {
               </div>
             )}
           </motion.div>
-        </main>
-      </div>
     </div>
   );
 };

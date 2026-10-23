@@ -24,8 +24,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
-import Sidebar from '../components/Sidebar';
-import TopNav from '../components/TopNav';
 import {
   Sparkline,
   TaskEmptyIllustration,
@@ -161,27 +159,9 @@ const Dashboard = () => {
   const userName = user?.name ? user.name.split(' ')[0] : 'Kumkum';
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9] transition-colors">
-      {/* Sidebar Navigation */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        notificationsCount={unreadNotifications}
-        invitationsCount={invitations.length}
-      />
-
-      {/* Main Content Area */}
-      <div className="lg:pl-64 flex flex-col min-h-screen">
-        {/* Top Navigation Bar */}
-        <TopNav
-          onToggleSidebar={() => setSidebarOpen(true)}
-          notificationsCount={unreadNotifications}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-        />
-
-        {/* Dashboard Main Container */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-7">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#080C1D] text-[#0F172A] dark:text-[#F5F7FF] transition-colors">
+      {/* Dashboard Main Container (Full Width) */}
+      <main className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-7">
           {/* Welcome Header Section */}
           <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -691,7 +671,6 @@ const Dashboard = () => {
             )}
           </section>
         </main>
-      </div>
     </div>
   );
 };

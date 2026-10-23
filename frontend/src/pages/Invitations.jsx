@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Check, X, ArrowRight, FolderKanban, Calendar } from 'lucide-react';
-import Sidebar from '../components/Sidebar';
-import TopNav from '../components/TopNav';
 import { InvitationsPageEmptyIllustration } from '../components/DashboardIllustrations';
 import api from '../services/api';
 
@@ -43,27 +41,9 @@ const Invitations = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9] transition-colors">
-      {/* Sidebar Navigation */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        notificationsCount={notificationsCount}
-        invitationsCount={invitations.length}
-      />
-
-      {/* Main Content Layout */}
-      <div className="lg:pl-64 flex flex-col min-h-screen">
-        {/* Top Header */}
-        <TopNav
-          onToggleSidebar={() => setSidebarOpen(true)}
-          notificationsCount={notificationsCount}
-          searchQuery={searchNavQuery}
-          onSearchChange={setSearchNavQuery}
-        />
-
-        {/* Invitations Page Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#080C1D] text-[#0F172A] dark:text-[#F5F7FF] transition-colors">
+      {/* Invitations Page Content */}
+      <main className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
           {/* Page Heading (Matching Visual Guide) */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-[#4F46E5] dark:text-[#818CF8] border border-indigo-100 dark:border-indigo-900/60 flex items-center justify-center shrink-0">
@@ -162,7 +142,6 @@ const Invitations = () => {
             </div>
           )}
         </main>
-      </div>
     </div>
   );
 };

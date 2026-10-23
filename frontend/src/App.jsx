@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
+import AuthenticatedLayout from './components/AuthenticatedLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -34,24 +35,33 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
-        <Route path="/projects/:id" element={<ProtectedRoute><ProjectDetail /></ProtectedRoute>} />
-        <Route path="/projects/:id/contributions" element={<ProtectedRoute><Contributions /></ProtectedRoute>} />
-        <Route path="/students" element={<ProtectedRoute><Students /></ProtectedRoute>} />
-        <Route path="/students/:id" element={<ProtectedRoute><StudentProfile /></ProtectedRoute>} />
-        <Route path="/clients" element={<ProtectedRoute><Clients /></ProtectedRoute>} />
-        <Route path="/time-tracking" element={<ProtectedRoute><TimeTracking /></ProtectedRoute>} />
-        <Route path="/financials" element={<ProtectedRoute><FinancialDashboard /></ProtectedRoute>} />
-        <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
-        <Route path="/templates" element={<ProtectedRoute><ProjectTemplates /></ProtectedRoute>} />
-        <Route path="/invitations" element={<ProtectedRoute><Invitations /></ProtectedRoute>} />
-        <Route path="/todos" element={<ProtectedRoute><Todos /></ProtectedRoute>} />
-        <Route path="/recommendations" element={<ProtectedRoute><Recommendations /></ProtectedRoute>} />
-        <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-        <Route path="/join-requests" element={<ProtectedRoute><JoinRequests /></ProtectedRoute>} />
-        <Route path="/projects/:id/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+        {/* Authenticated routes wrapped with single global horizontal navbar */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <AuthenticatedLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:id" element={<ProjectDetail />} />
+          <Route path="/projects/:id/contributions" element={<Contributions />} />
+          <Route path="/students" element={<Students />} />
+          <Route path="/students/:id" element={<StudentProfile />} />
+          <Route path="/clients" element={<Clients />} />
+          <Route path="/time-tracking" element={<TimeTracking />} />
+          <Route path="/financials" element={<FinancialDashboard />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/templates" element={<ProjectTemplates />} />
+          <Route path="/invitations" element={<Invitations />} />
+          <Route path="/todos" element={<Todos />} />
+          <Route path="/recommendations" element={<Recommendations />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/join-requests" element={<JoinRequests />} />
+          <Route path="/projects/:id/chat" element={<Chat />} />
+        </Route>
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

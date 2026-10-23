@@ -12,8 +12,6 @@ import {
   CheckCircle,
   XCircle
 } from 'lucide-react';
-import Sidebar from '../components/Sidebar';
-import TopNav from '../components/TopNav';
 import api from '../services/api';
 
 const TimeTracking = () => {
@@ -171,11 +169,8 @@ const TimeTracking = () => {
     .reduce((sum, e) => sum + e.duration / 60, 0);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9] transition-colors">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} notificationsCount={notificationsCount} />
-      <div className="lg:pl-64 flex flex-col min-h-screen">
-        <TopNav onToggleSidebar={() => setSidebarOpen(true)} notificationsCount={notificationsCount} />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#080C1D] text-[#0F172A] dark:text-[#F5F7FF] transition-colors">
+      <main className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-[#4F46E5] dark:text-[#818CF8] border border-indigo-100 dark:border-indigo-900/60 flex items-center justify-center">
@@ -344,7 +339,6 @@ const TimeTracking = () => {
             )}
           </div>
         </main>
-      </div>
 
       {showManualEntry && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">

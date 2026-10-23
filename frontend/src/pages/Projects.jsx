@@ -15,8 +15,6 @@ import {
   Heart,
   ShoppingCart
 } from 'lucide-react';
-import Sidebar from '../components/Sidebar';
-import TopNav from '../components/TopNav';
 import { ProjectEmptyIllustration } from '../components/DashboardIllustrations';
 import api from '../services/api';
 
@@ -134,26 +132,9 @@ const Projects = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] text-[#0F172A] dark:text-[#F1F5F9] transition-colors">
-      {/* Sidebar Navigation */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        notificationsCount={notificationsCount}
-      />
-
-      {/* Main Content Layout */}
-      <div className="lg:pl-64 flex flex-col min-h-screen">
-        {/* Top Header */}
-        <TopNav
-          onToggleSidebar={() => setSidebarOpen(true)}
-          notificationsCount={notificationsCount}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-        />
-
-        {/* Projects Page Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#080C1D] text-[#0F172A] dark:text-[#F5F7FF] transition-colors">
+      {/* Projects Page Content */}
+      <main className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
           {/* Breadcrumb Header */}
           <div className="flex items-center gap-1.5 text-xs font-medium text-[#64748B] dark:text-[#94A3B8]">
             <Folder className="w-3.5 h-3.5" />
@@ -481,7 +462,6 @@ const Projects = () => {
             </div>
           )}
         </main>
-      </div>
     </div>
   );
 };
