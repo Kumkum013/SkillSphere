@@ -4,7 +4,3 @@ dist/
 build/
 uploads/
 
-# Kubernetes secrets
-k8s/secret.yaml
-k8s/*.secret.yaml
-secrets/
